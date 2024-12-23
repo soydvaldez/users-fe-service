@@ -1,16 +1,22 @@
+<!-- Fondo oscuro que aparece cuando la barra lateral está visible -->
 <div
+  *ngIf="isSidebarVisible"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 z-10"
+  (click)="toggleSidebar()"
+></div>
+
+<div
+  [ngClass]="{ active: isSidebarVisible }"
   class="sidebar bg-white relative flex h-full w-[250px] max-w-[20rem] flex-col p-5 text-gray-700 shadow-xl shadow-blue-gray-900/5 border border-r-slate-200"
-  (mouseenter)="toggleSidebar()"
-  (mouseleave)="toggleSidebar()"
 >
-  <div class="flex items-center gap-4 p-4 mb-2">
+  <div class="flex items-center gap-4 py-4 mb-2">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class="size-6"
+      class="size-8"
     >
       <path
         stroke-linecap="round"
@@ -20,16 +26,47 @@
     </svg>
 
     <span
+      [ngClass]="{ 'opacity-0': !isSidebarVisible }"
       class="p-2 self-center text-sm font-semibold whitespace-nowrap dark:text-white"
       >MANAGER AUTH</span
     >
+    <div class="toggle">
+      <button (click)="toggleSidebar()" class="w-full h-full p-2">
+        <svg
+          *ngIf="isSidebarVisible"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-5"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <svg
+          *ngIf="!isSidebarVisible"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-5"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
   </div>
-
   <hr class="my-2 border border-zinc-200" />
-
   <nav
-    class="relative flex min-w-[240px] flex-col bg-blue-gray-500 gap-1 font-sans text-sm font-normal text-gray-700"
+    [ngClass]="{ 'w-10': isSidebarVisible }"
+    class="relative flex h-full flex-col bg-blue-gray-500 gap-1 font-sans text-sm font-normal text-gray-700"
   >
+    <!-- Users: Options -->
     <div class="relative block w-full">
       <div
         role="button"
@@ -37,16 +74,17 @@
       >
         <button
           type="button"
-          class="flex items-center justify-between w-full p-3 font-sans text-xl antialiased font-bold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
+          (click)="toggleUsersOptions()"
+          class="flex items-center justify-between w-full py-3 font-sans text-xl antialiased font-bold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
         >
-          <div class="grid mr-2 place-items-center">
+          <div class="grid mr-3 place-items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="size-6"
+              class="size-7"
             >
               <path
                 stroke-linecap="round"
@@ -55,6 +93,7 @@
               />
             </svg>
           </div>
+
           <p
             class="block mr-auto font-sans font-bold text-base antialiased leading-relaxed"
           >
@@ -62,22 +101,26 @@
           </p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
+            fill="currentColor"
             class="size-4"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m4.5 15.75 7.5-7.5 7.5 7.5"
+              fill-rule="evenodd"
+              d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+              clip-rule="evenodd"
             />
           </svg>
         </button>
       </div>
-
-      <div class="overflow-hidden">
+      <!-- Users: Options -->
+      <div
+        class="overflow-hidden transition-all duration-1000 ease-in-out bg-gray-50 rounded"
+        [ngClass]="{
+          'max-h-0': !isUserOptionsActive,
+          'max-h-96': isUserOptionsActive
+        }"
+      >
         <div
           class="block w-full py-1 font-sans text-sm antialiased font-light leading-normal text-gray-700"
         >
@@ -97,7 +140,7 @@
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
                     <div class="grid ml-4 place-items-center">
-                      Panel de Administración
+                      <span>Panel de Administración</span>
                     </div>
                   </div>
                 </a>
@@ -114,7 +157,7 @@
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
                     <div class="grid ml-4 place-items-center">
-                      Gestión de usuarios
+                      <span> Gestión de usuarios </span>
                     </div>
                   </div>
                 </a>
@@ -130,7 +173,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Reporting</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Reporting</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -145,7 +190,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Projects</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Projects</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -155,51 +202,30 @@
       </div>
     </div>
 
-    <hr class="my-2 border border-zinc-200" />
-
-    <div class="relative block w-full">
+    <!-- Roles: Options -->
+    <div class="relative block w-full my-5">
       <div
         role="button"
         class="flex items-center w-full p-0 leading-tight transition-all rounded-lg outline-none text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
       >
         <button
           type="button"
-          class="flex items-center justify-between w-full p-3 font-sans text-xl antialiased font-bold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
+          (click)="toggleRolesOptions()"
+          class="flex items-center justify-between w-full py-3 font-sans text-xl antialiased font-bold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
         >
           <div class="grid mr-2 place-items-center">
-            <!-- <svg
-              class="w-6 h-6 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 12a28.076 28.076 0 0 1-1.091 9M7.231 4.37a8.994 8.994 0 0 1 12.88 3.73M2.958 15S3 14.577 3 12a8.949 8.949 0 0 1 1.735-5.307m12.84 3.088A5.98 5.98 0 0 1 18 12a30 30 0 0 1-.464 6.232M6 12a6 6 0 0 1 9.352-4.974M4 21a5.964 5.964 0 0 1 1.01-3.328 5.15 5.15 0 0 0 .786-1.926m8.66 2.486a13.96 13.96 0 0 1-.962 2.683M7.5 19.336C9 17.092 9 14.845 9 12a3 3 0 1 1 6 0c0 .749 0 1.521-.031 2.311M12 12c0 3 0 6-2 9"
-              />
-            </svg> -->
-
             <svg
-              class="w-6 h-6 text-gray-800 dark:text-white"
-              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
               fill="none"
               viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-7"
             >
               <path
-                stroke="currentColor"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"
+                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
               />
             </svg>
           </div>
@@ -215,6 +241,7 @@
             stroke-width="1.5"
             stroke="currentColor"
             class="size-4"
+            *ngIf="false"
           >
             <path
               stroke-linecap="round"
@@ -222,10 +249,28 @@
               d="m4.5 15.75 7.5-7.5 7.5 7.5"
             />
           </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </button>
       </div>
-
-      <div class="overflow-hidden">
+      <!-- Roles: Options -->
+      <div
+        class="overflow-hidden transition-all duration-1000 ease-in-out bg-gray-50 rounded"
+        [ngClass]="{
+          'max-h-0': !isRoleOptionsActive,
+          'max-h-96': isRoleOptionsActive
+        }"
+      >
         <div
           class="block w-full py-1 font-sans text-sm antialiased font-light leading-normal text-gray-700"
         >
@@ -245,7 +290,7 @@
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
                     <div class="grid ml-4 place-items-center">
-                      Panel de Administración
+                      <span>Panel de Administración</span>
                     </div>
                   </div>
                 </a>
@@ -262,7 +307,7 @@
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
                     <div class="grid ml-4 place-items-center">
-                      Gestión de usuarios
+                      <span>Gestión de usuarios</span>
                     </div>
                   </div>
                 </a>
@@ -278,7 +323,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Reporting</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Reporting</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -293,7 +340,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Projects</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Projects</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -303,8 +352,7 @@
       </div>
     </div>
 
-    <hr class="my-2 border border-zinc-200" />
-
+    <!-- Dashboard: Options -->
     <div class="relative block w-full">
       <div
         role="button"
@@ -312,7 +360,8 @@
       >
         <button
           type="button"
-          class="flex items-center justify-between w-full px-3 font-sans text-xl antialiased font-semibold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
+          (click)="toggleDashboardOptions()"
+          class="flex items-center justify-between w-full py-3 font-sans text-xl antialiased font-bold leading-snug text-left transition-colors border-b-0 select-none border-b-blue-gray-100 hover:text-blue-gray-900"
         >
           <div class="grid mr-2 place-items-center">
             <svg
@@ -321,7 +370,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="size-6"
+              class="size-7"
             >
               <path
                 stroke-linecap="round"
@@ -342,6 +391,7 @@
             stroke-width="1.5"
             stroke="currentColor"
             class="size-4"
+            *ngIf="false"
           >
             <path
               stroke-linecap="round"
@@ -349,9 +399,28 @@
               d="m4.5 15.75 7.5-7.5 7.5 7.5"
             />
           </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </button>
       </div>
-      <div class="overflow-hidden">
+      <!-- Dashboard: Options -->
+      <div
+        class="overflow-hidden transition-all duration-1000 ease-in-out bg-gray-50 rounded"
+        [ngClass]="{
+          'max-h-0': !isDashboardOptionsActive,
+          'max-h-96': isDashboardOptionsActive
+        }"
+      >
         <div
           class="block w-full font-sans text-sm antialiased font-light leading-normal text-gray-700"
         >
@@ -370,7 +439,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Analytics</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Analytics</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -384,7 +455,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Reporting</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Reporting</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -399,7 +472,9 @@
                   <div
                     class="flex items-center w-full leading-tight transition-all outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                   >
-                    <div class="grid ml-4 place-items-center">Projects</div>
+                    <div class="grid ml-4 place-items-center">
+                      <span>Projects</span>
+                    </div>
                   </div>
                 </a>
               </li>
@@ -409,98 +484,113 @@
       </div>
     </div>
 
-    <hr class="my-2 border border-zinc-200" />
-
-    <div
-      role="button"
-      class="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-gray-900"
-    >
-      <div class="grid mr-4 place-items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          class="w-5 h-5"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M6.912 3a3 3 0 00-2.868 2.118l-2.411 7.838a3 3 0 00-.133.882V18a3 3 0 003 3h15a3 3 0 003-3v-4.162c0-.299-.045-.596-.133-.882l-2.412-7.838A3 3 0 0017.088 3H6.912zm13.823 9.75l-2.213-7.191A1.5 1.5 0 0017.088 4.5H6.912a1.5 1.5 0 00-1.434 1.059L3.265 12.75H6.11a3 3 0 012.684 1.658l.256.513a1.5 1.5 0 001.342.829h3.218a1.5 1.5 0 001.342-.83l.256-.512a3 3 0 012.684-1.658h2.844z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
-      </div>
-      <!-- Inbox -->
-      <div class="grid ml-auto place-items-center justify-self-end">
-        <div
-          class="relative grid items-center px-2 py-1 font-sans text-xs font-bold uppercase rounded-full select-none whitespace-nowrap bg-blue-gray-500/20 text-blue-gray-900"
-        >
-          <span class="">14</span>
+    <div class="sidebar__bottom" style="margin-top: auto">
+      <hr class="my-2 border border-zinc-200" />
+      <!-- Inbox: Options -->
+      <div
+        role="button"
+        class="flex items-center w-full py-4 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-gray-900"
+      >
+        <div class="grid mr-4 place-items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-7"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z"
+            />
+          </svg>
+        </div>
+        <span>Inbox</span>
+        <div class="grid ml-auto place-items-center justify-self-end">
+          <div
+            class="relative grid items-center px-2 py-1 font-sans text-xs font-bold uppercase rounded-full select-none whitespace-nowrap bg-blue-gray-500/20 text-blue-gray-900"
+          >
+            <span class="">14</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      role="button"
-      class="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
-    >
-      <div class="grid mr-4 place-items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          class="w-5 h-5"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
+
+      <!-- Profile: Options -->
+      <div
+        role="button"
+        class="flex items-center w-full py-4 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+      >
+        <div class="grid mr-4 place-items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-7"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+          </svg>
+        </div>
+        <span>Profile</span>
       </div>
-      <!-- Profile -->
-    </div>
-    <div
-      role="button"
-      class="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
-    >
-      <div class="grid mr-4 place-items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          class="w-5 h-5"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
+      <!-- Settings: Options -->
+      <div
+        role="button"
+        class="flex items-center w-full py-4 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+      >
+        <div class="grid mr-4 place-items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-7"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+          </svg>
+        </div>
+        <span>Settings</span>
       </div>
-      <!-- Settings -->
-    </div>
-    <div
-      role="button"
-      class="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
-    >
-      <div class="grid mr-4 place-items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          class="w-5 h-5"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M12 2.25a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM6.166 5.106a.75.75 0 010 1.06 8.25 8.25 0 1011.668 0 .75.75 0 111.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 011.06 0z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
+      <!-- Log Out: Options -->
+      <div
+        role="button"
+        class="flex items-center w-full pt-4 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+      >
+        <div class="grid mr-4 place-items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-7"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+            />
+          </svg>
+        </div>
+        <span> Log Out</span>
       </div>
-      <!-- Log Out -->
     </div>
   </nav>
 </div>
